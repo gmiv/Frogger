@@ -5,9 +5,9 @@ var Entity = function(){
         "y":0
     };
 };
-//Entity.prototype.render = function(ctx) {
-//    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-//};
+Entity.prototype.render = function(ctx) {
+    ctx.drawImage(Resources.get(this.sprite), this.position.x, this.position.y);
+};
 
 // ENEMY
 var Enemy = Object.create(Entity);
@@ -40,8 +40,13 @@ Enemy.prototype.reset = function() {
 }
 
 Enemy.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.position.x, this.position.y);
+    
+    this.render();
+    
 };
+//Enemy.prototype.render = function() {
+//    ctx.drawImage(Resources.get(this.sprite), this.position.x, this.position.y);
+//};
 // END ENEMY
 
 // PLAYER
