@@ -49,13 +49,54 @@ var Player = Object.create(Entity);
 Player.prototype.constructor = Player;
 
 var Player = function() {
-
-//    this.position = [];
+    Entity.call(this);
+    this.position.x = 5;//Rand(10,400); 
+    this.position.y = 400;
     this.sprite = 'images/char-boy.png';
 };
 
 Player.prototype.handleInput = function(key){
-    
+//    console.log("moved from:" + this.position.x +"," + this.position.y);
+    switch (key) {
+		case 'left':
+			if (this.position.x <= 5) {
+				this.position.x = 5;
+			} else {
+				this.position.x -= 100;
+			}
+			break;
+
+		case 'right':
+			if (this.position.x >= 305) {
+				this.position.x = 405;
+			} else {
+				this.position.x += 100;
+			}
+			break;
+
+		case 'up':
+			if (this.position.y <= 72) {
+				this.position.y = -4;
+			} else {
+				this.position.y -= 82;
+			}
+			break;
+
+		case 'down':
+			if (this.position.y >= 400) {
+				this.position.y = 400;
+			} else {
+                if(this.position.y+80 >=400){
+                    this.position.y = 400;
+                }
+                else{
+                    this.position.y += 82;
+                }
+				
+			}
+			break;
+	}
+//    console.log("moved to:" + this.position.x +"," + this.position.y);
 };
 
 
@@ -63,9 +104,7 @@ Player.prototype.update = function(dt) {
 
 };
 // Draw the enemy on the screen, required method for game
-Player.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-};
+Player.prototype.render = Entity.prototype.render;
 // END PLAYER
 
 // UTILITIES
@@ -89,20 +128,41 @@ document.addEventListener('keyup', function(e) {
 });
 
 // MAIN
-var player
-var allEnemies
+var player;
+var allEnemies;
+var audio ;
 var Main = function(){
-    e = new Enemy();
-    console.log(e);
+//    e = new Enemy();
+//    console.log(e);
     player = new Player();
 
     allEnemies = [];
     for (var i = 0; i < 3; i++) {
         allEnemies.push(new Enemy());
 
-    };  
+    }; 
+    audio = new Audio('sounds/Eight_Bit_Hollow_Night.mp3');
+    audio.play();
 };
 // END MAIN
 
+// SOUND
+var isPlaying = true;
+var onKeyDown = function(event) {
+    if (event.keyCode == 27){
+        if(!isPlaying){
+            audio.play();
+            isPlaying = true;
+        }
+        else{
+            audio.pause();
+            isPlaying = false;
+        };    
+    };
+};
+document.addEventListener('keydown', onKeyDown, false);
+// END SOUND
+
 Main();
+
 
