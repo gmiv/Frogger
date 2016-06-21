@@ -17,12 +17,22 @@ Enemy.prototype.constructor = Enemy;
 
 var Enemy = function () {
     Entity.call(this);
-
     this.position.x = Rand(-100,-10)
-    this.position.y = Rand(50,180);
-    this.speed = Rand(50,280);
+    this.position.y = this.startPosition(Rand(1,3));//220;//140;//60;//Rand(50,180);
+    this.speed = Rand(80,280);
     this.sprite = 'images/enemy-bug.png';
 };
+
+Enemy.prototype.startPosition = function(index){
+	switch (index) {
+		case 1:
+            return 60;
+        case 2:
+            return 140;
+        case 3:
+            return 220;
+    }
+}
 
 Enemy.prototype.update = function(dt) {
     
@@ -57,7 +67,7 @@ var Player = function() {
 
 Player.prototype.handleInput = function(key){
 //    console.log("moved from:" + this.position.x +"," + this.position.y);
-    switch (key) {
+	switch (key) {
 		case 'left':
 			if (this.position.x <= 5) {
 				this.position.x = 5;
@@ -86,12 +96,12 @@ Player.prototype.handleInput = function(key){
 			if (this.position.y >= 400) {
 				this.position.y = 400;
 			} else {
-                if(this.position.y+80 >=400){
-                    this.position.y = 400;
-                }
-                else{
-                    this.position.y += 82;
-                }
+				if(this.position.y+80 >=400){
+					this.position.y = 400;
+				}
+				else{
+					this.position.y += 82;
+				}
 				
 			}
 			break;
