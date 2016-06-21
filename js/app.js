@@ -1,11 +1,13 @@
 var Entity = function(){
-
+    this.sprite = null;
+    this.speed = 0;
     this.position = {
         "x":0,
         "y":0
     };
+    this.meta = {"wins":0,"losses":0,"gems":0};
 };
-Entity.prototype.render = function(ctx) {
+Entity.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.position.x, this.position.y);
 };
 
@@ -39,14 +41,7 @@ Enemy.prototype.reset = function() {
     this.position.y = Rand(50,180);
 }
 
-Enemy.prototype.render = function() {
-    
-    this.render();
-    
-};
-//Enemy.prototype.render = function() {
-//    ctx.drawImage(Resources.get(this.sprite), this.position.x, this.position.y);
-//};
+Enemy.prototype.render = Entity.prototype.render;
 // END ENEMY
 
 // PLAYER
@@ -97,14 +92,14 @@ document.addEventListener('keyup', function(e) {
 var player
 var allEnemies
 var Main = function(){
-//    e = new Enemy();
-//    console.log(e);
+    e = new Enemy();
+    console.log(e);
     player = new Player();
 
     allEnemies = [];
     for (var i = 0; i < 3; i++) {
         allEnemies.push(new Enemy());
-//        console.log(allEnemies[i]);
+
     };  
 };
 // END MAIN
