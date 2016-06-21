@@ -1,41 +1,56 @@
+var Entity = function(){
+
+    this.position = {
+        "x":0,
+        "y":0
+    };
+};
+//Entity.prototype.render = function(ctx) {
+//    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+//};
 
 // ENEMY
-var Enemy = Object.create(Transform);
+var Enemy = Object.create(Entity);
 Enemy.prototype.constructor = Enemy;
 
 var Enemy = function () {
-    this.position = [Rand(-100,-10), Rand(50,180)];
-    this.speed = Rand(50,180);
+    Entity.call(this);
+
+    this.position.x = Rand(-100,-10)
+    this.position.y = Rand(50,180);
+    this.speed = Rand(50,280);
     this.sprite = 'images/enemy-bug.png';
 };
 
 Enemy.prototype.update = function(dt) {
     
     if(dt !== 0){
-        this.position = [this.position[0] + this.speed * dt, this.position[1]];
-        //console.log(this.position); 
+        this.position.x = this.position.x + (this.speed * dt);
+        this.position.y = this.position.y;
         };
     
-    if( this.position[0] > 550){
+    if( this.position.x >= 550){
         this.reset();
         };
 };
 
 Enemy.prototype.reset = function() {
-    this.position = [Rand(-100,-10), Rand(50,180)];
+    this.position.x = Rand(-100,-10)
+    this.position.y = Rand(50,180);
 }
 
 Enemy.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.position[0], this.position[1]);
+    ctx.drawImage(Resources.get(this.sprite), this.position.x, this.position.y);
 };
 // END ENEMY
 
-
 // PLAYER
+var Player = Object.create(Entity);
+Player.prototype.constructor = Player;
 
 var Player = function() {
 
-    this.position = [];
+//    this.position = [];
     this.sprite = 'images/char-boy.png';
 };
 
@@ -77,12 +92,14 @@ document.addEventListener('keyup', function(e) {
 var player
 var allEnemies
 var Main = function(){
-    
+//    e = new Enemy();
+//    console.log(e);
     player = new Player();
 
     allEnemies = [];
-    for (var i = 0; i < 2; i++) {
+    for (var i = 0; i < 3; i++) {
         allEnemies.push(new Enemy());
+//        console.log(allEnemies[i]);
     };  
 };
 // END MAIN
