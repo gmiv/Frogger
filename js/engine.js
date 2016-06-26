@@ -151,15 +151,25 @@ var Engine = (function(global) {
          * the render function you have defined.
          */
         allEnemies.forEach(function(enemy) {
-            enemy.render();
+            enemy.render(true);
         });
 //        if (player.state.start || player.state.playing){
 //            player.render();
 //        }
-        player.render();
+        if (player.meta.lives <= 0){
+            player.render(false);
+        }
+        else{
+             player.render(true);
+        }
+       
         
         if (player.state.won){
-            winScreen.render();
+            winScreen.render(true);
+        }
+        
+        if (player.meta.lives <= 0){
+            gameoverScreen.render(true);
         }
     }
 
@@ -181,7 +191,8 @@ var Engine = (function(global) {
         'images/grass-block.png',
         'images/enemy-bug.png',
         'images/char-boy.png',
-        'images/win.png'
+        'images/win.png',
+        'images/gameover.png'
     ]);
     Resources.onReady(init);
 

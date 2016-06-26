@@ -14,14 +14,18 @@ var Entity = function(){
         "start" : false,
         "playing" : false,
         "won" : false,
-        "reset" : false
+        "reset" : false,
+        "hit" : false
     };
 
-    this.meta = {"wins":0,"losses":0,"gems":0};
+    this.meta = {"wins":0,"losses":0,"gems":0,"lives":5};
 };
-Entity.prototype.render = function() {
-
-    ctx.drawImage(Resources.get(this.sprite), this.position.x, this.position.y); 
+Entity.prototype.render = function(render) {
+//    console.log(render);
+    if(render === true){
+        ctx.drawImage(Resources.get(this.sprite), this.position.x, this.position.y); 
+    }
+    
 };
 // END ENTITY
 
@@ -43,12 +47,28 @@ Win.prototype = Object.create(Entity.prototype);
 
 /////////////
 
+// GAMEOVER
+var Gameover = function () {
+    Entity.call(this);
+    this.position = {
+            "x":50,
+            "y":200
+        };
+    this.sprite = 'images/gameover.png';
+//    this.state.start = true;
+//    this.state.playing = true;
+};
+Gameover.prototype = Object.create(Entity.prototype);
+// END GAMEOVER
+
+/////////////
+
 // ENEMY
 var Enemy = function () {
     Entity.call(this);
     this.position.x = Rand(-100,-10)
     this.position.y = this.startPosition(Rand(1,3));//220;//140;//60;//Rand(50,180);
-    this.speed = Rand(80,280);
+    this.speed = Rand(80,380);
     this.sprite = 'images/enemy-bug.png';
     this.state.start = true;
     this.state.playing = true;
@@ -164,17 +184,19 @@ Player.prototype.win = function(){
 
 Player.prototype.celebrate = function(dt){
     self = this;
-    this.state.start = false;
-    this.state.playing = false;
+//    this.state.start = false;
+//    this.state.playing = false;
     this.state.won = true;
 //    this.state = platerState;
     this.winTimer = setTimeout(self.win, 2000);
+    player.meta.wins = player.meta.wins + 1;
 };
 
 Player.prototype.reset = function() {
     this.state.start = true;
-    this.state.playing = true
+//    this.state.playing = true
     this.state.won = false;
+    this.state.hit = false;
 //    this.state = platerState;
     this.position.x = this.startPosition(Rand(1,4));
     this.position.y = 400;
@@ -188,11 +210,15 @@ Player.prototype.update = function(dt) {
 //        this.state = platerState;
     }
     if (this.state.playing){
+        console.log("PLAYING")
         if (this.position.y === -4){
-       
-            this.celebrate(dt);
-            this.state.won = true;
-//            this.state = platerState;
+        	if (!this.state.won){
+                console.log("WIN")
+                this.celebrate(dt);
+                this.state.won = true;
+//                this.state = platerState;
+        	}
+
         };
     };
     
@@ -274,7 +300,9 @@ function checkCollisions() {
             allEnemies[i].position.y < player.position.y + player.size.h &&
             allEnemies[i].size.h + allEnemies[i].position.y > player.position.y){
             
+            player.state.hit = true;
             player.reset();
+            player.meta.lives = player.meta.lives - 1;
         }
     }
 };
@@ -304,7 +332,9 @@ var player;
 var allEnemies;
 var audio ;
 var reset;
-    
+
+var enemyAmount = 4;
+
 platerState = {
         "start" : false,
         "playing" : false,
@@ -319,12 +349,13 @@ var Main = function(){
 //    player.state = platerState;
 
     allEnemies = [];
-    for (var i = 0; i < 3; i++) {
+    for (var i = 0; i < enemyAmount; i++) {
         allEnemies.push(new Enemy());
 
     }; 
     
     winScreen = new Win();
+    gameoverScreen = new Gameover();
     
     checkCollisions();
     
