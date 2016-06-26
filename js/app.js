@@ -9,7 +9,8 @@ var Entity = function(){
     this.state = {
         "start" : false,
         "playing" : false,
-        "won" : false
+        "won" : false,
+        "reset" : false
     };
 
     this.meta = {"wins":0,"losses":0,"gems":0};
@@ -19,6 +20,22 @@ Entity.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.position.x, this.position.y); 
 };
 // END ENTITY
+
+/////////////
+
+// WIN
+var Win = function () {
+    Entity.call(this);
+    this.position = {
+            "x":50,
+            "y":200
+        };
+    this.sprite = 'images/win.png';
+//    this.state.start = true;
+//    this.state.playing = true;
+};
+Win.prototype = Object.create(Entity.prototype);
+// END WIN
 
 /////////////
 
@@ -79,7 +96,6 @@ var Player = function() {
 Player.prototype = Object.create(Entity.prototype);
 
 Player.prototype.handleInput = function(key){
-//    console.log("moved from:" + this.position.x +"," + this.position.y);
 	switch (key) {
 		case 'left':
 			if (this.position.x <= 5) {
@@ -119,7 +135,6 @@ Player.prototype.handleInput = function(key){
 			}
 			break;
 	}
-//    console.log("moved to:" + this.position.x +"," + this.position.y);
 };
 
 Player.prototype.startPosition = function(index){
@@ -135,38 +150,102 @@ Player.prototype.startPosition = function(index){
     }
 }
 
-Player.prototype.celebrate = function(){
-    console.log("YOU WIN!")
+Player.prototype.win = function(){
+//    var ms = 3000 + new Date().getTime();
+//    while (new Date() < ms){}
+    
+    reset = true;
+    return true;   
+};
+
+Player.prototype.celebrate = function(dt){
+    self = this;
     this.state.start = false;
     this.state.playing = false;
-    this.timer = setTimeout(this.reset.bind(this), 1000);  // bind to 'this'
-
+    this.state.won = true;
+//    this.state = platerState;
+    this.winTimer = setTimeout(self.win, 2000);
 };
 
 Player.prototype.reset = function() {
-    
+    this.state.start = true;
+    this.state.playing = true
+    this.state.won = false;
+//    this.state = platerState;
     this.position.x = this.startPosition(Rand(1,4));
     this.position.y = 400;
-    this.state.start = true;
-    this.state.playing = true;
+
 }
     
 Player.prototype.update = function(dt) {
-    if (this.position.y === -4){
-        this.state.won = true;
-        this.celebrate();
-        
+//    var winningpos;
+    if(this.state.start){
+        this.state.start = true;
+//        this.state = platerState;
+    }
+    if (this.state.start || this.state.playing){
+        if (this.position.y === -4){
+       
+            this.celebrate(dt);
+            this.state.won = true;
+//            this.state = platerState;
+            console.log("WINNNIGN")
+            
+        };
+    };
+    
+    if(this.state.won){
+        platerState.win = true;
+    };
+    
+    if(reset === true){
+        this.state.reset = true;
+        }
+    
+    if(this.state.reset){
+        this.reset();
+        this.state.reset = false;
+//        this.state = platerState;
+        reset = false;
     }
 };
 // END PLAYER
 
 /////////////
 
+// SOUND CONTROLLER
+SoundController = function(){
+    this.openingSND = new Audio('sounds/opening.mp3');
+    this.middleSND = new Audio('sounds/middle.mp3');
+    this.winSND = new Audio('sounds/win.mp3');
+    this.currentSND = this.openingSND;
+};
+SoundController.prototype.update = function(){
+//    console.log(platerState);
+    if(platerState.start){
+        this.currentSND .pause()
+//        this.currentSND.currentTime = 0
+        this.currentSND = this.openingSND;
+//        this.currentSND.play();
+    };
+    if(platerState.win){
+        this.currentSND .pause()
+//        this.currentSND.currentTime = 0
+        this.currentSND = this.winSND;
+        this.currentSND.play();
+        platerState.win = false;
+    }
+};
+SoundController.prototype.play = function(){
+    
+    this.currentSND.play();
+};
+
+// END SOUND CONTROLLER
 // UTILITIES
 
 function checkCollisions() {
-//    console.log(player.position)
-
+    
 };
     
 var Rand = function (min, max) {
@@ -190,12 +269,23 @@ document.addEventListener('keyup', function(e) {
 
 // MAIN
 var player;
+
 var allEnemies;
 var audio ;
+var reset;
+    
+platerState = {
+        "start" : false,
+        "playing" : false,
+        "won" : false,
+        "reset" : false
+    };
+    
 var Main = function(){
 //    e = new Enemy();
-//    console.log(e);
     player = new Player();
+    platerState.start = true;
+//    player.state = platerState;
 
     allEnemies = [];
     for (var i = 0; i < 3; i++) {
@@ -203,9 +293,11 @@ var Main = function(){
 
     }; 
     
+    winScreen = new Win();
+    
     checkCollisions();
     
-    audio = new Audio('sounds/Eight_Bit_Hollow_Night.mp3');
+    audio = new SoundController();
 //    audio.play();
 };
 // END MAIN
