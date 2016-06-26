@@ -1,3 +1,4 @@
+// ENTITY
 var Entity = function(){
     this.sprite = null;
     this.speed = 0;
@@ -5,27 +6,38 @@ var Entity = function(){
         "x":0,
         "y":0
     };
+    this.state = {
+        "start" : false,
+        "playing" : false,
+        "won" : false
+    };
+
     this.meta = {"wins":0,"losses":0,"gems":0};
 };
 Entity.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.position.x, this.position.y);
+
+    ctx.drawImage(Resources.get(this.sprite), this.position.x, this.position.y); 
 };
+// END ENTITY
+
+/////////////
 
 // ENEMY
-var Enemy = Object.create(Entity);
-Enemy.prototype.constructor = Enemy;
-
 var Enemy = function () {
     Entity.call(this);
     this.position.x = Rand(-100,-10)
     this.position.y = this.startPosition(Rand(1,3));//220;//140;//60;//Rand(50,180);
     this.speed = Rand(80,280);
     this.sprite = 'images/enemy-bug.png';
+    this.state.start = true;
+    this.state.playing = true;
 };
 
+Enemy.prototype = Object.create(Entity.prototype);
+
 Enemy.prototype.startPosition = function(index){
-	switch (index) {
-		case 1:
+    switch (index) {
+        case 1:
             return 60;
         case 2:
             return 140;
@@ -35,35 +47,36 @@ Enemy.prototype.startPosition = function(index){
 }
 
 Enemy.prototype.update = function(dt) {
-    
+
     if(dt !== 0){
         this.position.x = this.position.x + (this.speed * dt);
         this.position.y = this.position.y;
         };
-    
+
     if( this.position.x >= 550){
         this.reset();
         };
 };
 
 Enemy.prototype.reset = function() {
-    this.position.x = Rand(-100,-10)
-    this.position.y = Rand(50,180);
-}
-
-Enemy.prototype.render = Entity.prototype.render;
+        this.position.x = Rand(-100,-10)
+        this.position.y = this.startPosition(Rand(1,3));
+    }
 // END ENEMY
 
-// PLAYER
-var Player = Object.create(Entity);
-Player.prototype.constructor = Player;
+/////////////
 
+// PLAYER
 var Player = function() {
     Entity.call(this);
-    this.position.x = 5;//Rand(10,400); 
+    this.position.x = this.startPosition(Rand(1,4)); 
     this.position.y = 400;
     this.sprite = 'images/char-boy.png';
+    this.state.start = true;
+    this.state.playing = true;
 };
+
+Player.prototype = Object.create(Entity.prototype);
 
 Player.prototype.handleInput = function(key){
 //    console.log("moved from:" + this.position.x +"," + this.position.y);
@@ -109,15 +122,53 @@ Player.prototype.handleInput = function(key){
 //    console.log("moved to:" + this.position.x +"," + this.position.y);
 };
 
+Player.prototype.startPosition = function(index){
+	switch (index) {
+		case 1:
+            return 5;
+        case 2:
+            return 105;
+        case 3:
+            return 305;
+        case 4:
+            return 405;
+    }
+}
 
-Player.prototype.update = function(dt) {
+Player.prototype.celebrate = function(){
+    console.log("YOU WIN!")
+    this.state.start = false;
+    this.state.playing = false;
+    this.timer = setTimeout(this.reset.bind(this), 1000);  // bind to 'this'
 
 };
-// Draw the enemy on the screen, required method for game
-Player.prototype.render = Entity.prototype.render;
+
+Player.prototype.reset = function() {
+    
+    this.position.x = this.startPosition(Rand(1,4));
+    this.position.y = 400;
+    this.state.start = true;
+    this.state.playing = true;
+}
+    
+Player.prototype.update = function(dt) {
+    if (this.position.y === -4){
+        this.state.won = true;
+        this.celebrate();
+        
+    }
+};
 // END PLAYER
 
+/////////////
+
 // UTILITIES
+
+function checkCollisions() {
+//    console.log(player.position)
+
+};
+    
 var Rand = function (min, max) {
     return Math.floor((Math.random() * max) + min);
 };
@@ -151,8 +202,11 @@ var Main = function(){
         allEnemies.push(new Enemy());
 
     }; 
+    
+    checkCollisions();
+    
     audio = new Audio('sounds/Eight_Bit_Hollow_Night.mp3');
-    audio.play();
+//    audio.play();
 };
 // END MAIN
 
