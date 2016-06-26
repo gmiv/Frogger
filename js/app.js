@@ -6,6 +6,10 @@ var Entity = function(){
         "x":0,
         "y":0
     };
+    this.size = {
+        "w" : 50,
+        "h" : 50
+    };
     this.state = {
         "start" : false,
         "playing" : false,
@@ -183,19 +187,18 @@ Player.prototype.update = function(dt) {
         this.state.start = true;
 //        this.state = platerState;
     }
-    if (this.state.start || this.state.playing){
+    if (this.state.playing){
         if (this.position.y === -4){
        
             this.celebrate(dt);
             this.state.won = true;
 //            this.state = platerState;
-            console.log("WINNNIGN")
-            
         };
     };
     
     if(this.state.won){
         platerState.win = true;
+//        console.log(platerState)
     };
     
     if(reset === true){
@@ -213,39 +216,67 @@ Player.prototype.update = function(dt) {
 
 /////////////
 
-// SOUND CONTROLLER
-SoundController = function(){
-    this.openingSND = new Audio('sounds/opening.mp3');
-    this.middleSND = new Audio('sounds/middle.mp3');
-    this.winSND = new Audio('sounds/win.mp3');
-    this.currentSND = this.openingSND;
-};
-SoundController.prototype.update = function(){
-//    console.log(platerState);
-    if(platerState.start){
-        this.currentSND .pause()
-//        this.currentSND.currentTime = 0
-        this.currentSND = this.openingSND;
-//        this.currentSND.play();
-    };
-    if(platerState.win){
-        this.currentSND .pause()
-//        this.currentSND.currentTime = 0
-        this.currentSND = this.winSND;
-        this.currentSND.play();
-        platerState.win = false;
-    }
-};
-SoundController.prototype.play = function(){
-    
-    this.currentSND.play();
-};
-
-// END SOUND CONTROLLER
-// UTILITIES
+//// SOUND CONTROLLER
+//SoundController = function(){
+//    this.openingSND = new Audio('sounds/opening.mp3');
+//    this.middleSND = new Audio('sounds/middle.mp3');
+//    this.winSND = new Audio('sounds/win.mp3');
+//    this.currentSND = this.openingSND;
+//};
+//SoundController.prototype.update = function(){
+////    console.log(platerState);
+//    self = this;
+//    isstarted = true;
+//    iswinning = true;
+//    if(platerState.start){
+//        if(isstarted){
+//            this.currentSND.play();
+//            isstarted = false;
+//        }
+////        this.currentSND.volume = 0;
+////        this.currentSND.pause();
+////        //Avoid thselfe Promise Error
+////        setTimeout(function () {      
+////           self.currentSND.play();
+////        }, 150);
+//
+//    };
+//    if(platerState.win){
+//        if(iswinning){
+//            
+//           //        this.currentSND.volume = 0;
+//            this.currentSND.pause();
+//            //Avoid the Promise Error
+//            this.currentSND = this.winSND;
+//            setTimeout(function () {      
+//               self.currentSND.play();
+//            }, 150);
+//            iswinning = false;
+//            console.log("in winning")
+//        }
+//
+//
+//        platerState.win = false;
+//    }
+//};
+//SoundController.prototype.play = function(){
+//    
+//    this.currentSND.play();
+//};
+//
+//// END SOUND CONTROLLER
+//// UTILITIES
 
 function checkCollisions() {
-    
+    for(var i = 0; i<allEnemies.length; i++){
+        if (allEnemies[i].position.x < player.position.x + player.size.w &&
+            allEnemies[i].position.x + allEnemies[i].size.w > player.position.x &&
+            allEnemies[i].position.y < player.position.y + player.size.h &&
+            allEnemies[i].size.h + allEnemies[i].position.y > player.position.y){
+            
+            player.reset();
+        }
+    }
 };
     
 var Rand = function (min, max) {
@@ -297,7 +328,7 @@ var Main = function(){
     
     checkCollisions();
     
-    audio = new SoundController();
+//    audio = new SoundController();
 //    audio.play();
 };
 // END MAIN

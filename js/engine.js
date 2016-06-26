@@ -96,7 +96,7 @@ var Engine = (function(global) {
         });
         player.update(dt);
         
-        audio.update();
+//        audio.update();
         
     }
 
