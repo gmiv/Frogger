@@ -7,8 +7,8 @@ var Entity = function(){
         "y":0
     };
     this.size = {
-        "w" : 50,
-        "h" : 50
+        "w" : 95,
+        "h" : 95
     };
     this.state = {
         "start" : false,

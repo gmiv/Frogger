@@ -1,11 +1,12 @@
 body {
     text-align: center;
-    
+/*    display: flex;*/
+/*    flex-flow: wrap;*/
 }
 
 
 canvas {
 /*    background-color: blue;*/
-    width: 50%;
+    width: 30%;
     height: auto;
 }

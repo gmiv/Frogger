@@ -24,6 +24,12 @@ var Engine = (function(global) {
         canvas = doc.createElement('canvas'),
         ctx = canvas.getContext('2d'),
         lastTime;
+    
+    canvas.setAttribute("id", "canvasID");
+    
+    $("#canvasID").appendTo("#mainID");
+//        var currentDiv = document.getElementById("div1"); 
+//        document.body.insertBefore(ctx, currentDiv);
 
     canvas.width = 505;
     canvas.height = 606;
