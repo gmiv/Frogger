@@ -26,7 +26,6 @@ var Engine = (function(global) {
         lastTime;
     
     canvas.setAttribute("id", "canvasID");
-    
     $("#canvasID").appendTo("#mainID");
 //        var currentDiv = document.getElementById("div1"); 
 //        document.body.insertBefore(ctx, currentDiv);
