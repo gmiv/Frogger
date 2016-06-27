@@ -1,3 +1,4 @@
+
 // ENTITY
 var Entity = function(){
     this.sprite = null;
@@ -7,8 +8,8 @@ var Entity = function(){
         "y":0
     };
     this.size = {
-        "w" : 95,
-        "h" : 95
+        "w" : 25,
+        "h" : 85
     };
     this.state = {
         "start" : false,
@@ -179,6 +180,7 @@ Player.prototype.win = function(){
 //    while (new Date() < ms){}
     
     reset = true;
+    platerState.win = false;
     return true;   
 };
 
@@ -205,12 +207,14 @@ Player.prototype.reset = function() {
     
 Player.prototype.update = function(dt) {
 //    var winningpos;
+//    console.log(platerState);
     if(this.state.start){
         this.state.start = true;
 //        this.state = platerState;
     }
     if (this.state.playing){
-        console.log("PLAYING")
+//        console.log("PLAYING")
+        platerState.playing = true;
         if (this.position.y === -4){
         	if (!this.state.won){
                 console.log("WIN")
@@ -224,6 +228,8 @@ Player.prototype.update = function(dt) {
     
     if(this.state.won){
         platerState.win = true;
+        platerState.playing = false;
+//        console.log("WINNING")
 //        console.log(platerState)
     };
     
@@ -291,18 +297,23 @@ Player.prototype.update = function(dt) {
 //};
 //
 //// END SOUND CONTROLLER
-//// UTILITIES
 
+/////////////////
+
+//// UTILITIES
 function checkCollisions() {
-    for(var i = 0; i<allEnemies.length; i++){
-        if (allEnemies[i].position.x < player.position.x + player.size.w &&
-            allEnemies[i].position.x + allEnemies[i].size.w > player.position.x &&
-            allEnemies[i].position.y < player.position.y + player.size.h &&
-            allEnemies[i].size.h + allEnemies[i].position.y > player.position.y){
-            
-            player.state.hit = true;
-            player.reset();
-            player.meta.lives = player.meta.lives - 1;
+    
+    if(platerState.playing){
+        for(var i = 0; i<allEnemies.length; i++){
+            if (allEnemies[i].position.x < player.position.x + player.size.w &&
+                allEnemies[i].position.x + allEnemies[i].size.w > player.position.x &&
+                allEnemies[i].position.y < player.position.y + player.size.h &&
+                allEnemies[i].size.h + allEnemies[i].position.y > player.position.y){
+
+                player.state.hit = true;
+                player.reset();
+                player.meta.lives = player.meta.lives - 1;
+            }
         }
     }
 };
@@ -312,6 +323,7 @@ var Rand = function (min, max) {
 };
 // END UTILITIES
 
+/////////////////
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
@@ -341,7 +353,7 @@ platerState = {
         "won" : false,
         "reset" : false
     };
-    
+
 var Main = function(){
 //    e = new Enemy();
     player = new Player();
