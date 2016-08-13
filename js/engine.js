@@ -25,14 +25,14 @@ var Engine = (function(global) {
         ctx = canvas.getContext('2d'),
         lastTime;
     
-    canvas.setAttribute("id", "canvasID");
-    $("#canvasID").appendTo("#mainID");
-//        var currentDiv = document.getElementById("div1"); 
-//        document.body.insertBefore(ctx, currentDiv);
+    
+    $(canvas).appendTo('game');
 
     canvas.width = 505;
-    canvas.height = 606;
-    doc.body.appendChild(canvas);
+    canvas.height = 586;
+    
+//    doc.body.appendChild(canvas);
+    
     /* This function serves as the kickoff point for the game loop itself
      * and handles properly calling the update and render methods.
      */
@@ -160,20 +160,21 @@ var Engine = (function(global) {
 //        if (player.state.start || player.state.playing){
 //            player.render();
 //        }
-        if (player.meta.lives <= 0){
+        if (playerState.gameover){
             player.render(false);
         }
         else{
              player.render(true);
         }
-       
         
-        if (player.state.won){
+        if (playerState.won){
             winScreen.render(true);
         }
-        
-        if (player.meta.lives <= 0){
+
+        if (playerState.gameover){
+//            player.render(false);
             gameoverScreen.render(true);
+
         }
     }
 

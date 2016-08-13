@@ -11,20 +11,21 @@
 <body>
     <div id="mainID" class="container">
         <div class="row">
-            <div id="div1" class="col-md-6">
-                <script src="js/resources.js"></script>
-                <script src="js/app.js"></script>
-                <script src="js/engine.js"></script>
+            <game id="div1" class="col-md-7">
+
+            </game>
+            <div class="col-md-3 text-center score" >
+                SCORE : 
             </div>
-            <div class="col-md-6">
-                SCORE : 0
+            <div class="col-md-2 text-center score" id="score">
+            0   
             </div>
         </div>
     </div>
 
         <div class="container">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-6" id="lives">
                     Lives: 5
 
                 </div>
@@ -35,4 +36,9 @@
         </div>
     
 </body>
+    
+<script src="js/resources.js"></script>
+<script src="js/app.js"></script>
+<script src="js/engine.js"></script>
+    
 </html>

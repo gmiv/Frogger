@@ -9,14 +9,15 @@ var Entity = function(){
     };
     this.size = {
         "w" : 25,
-        "h" : 85
+        "h" : 55
     };
     this.state = {
         "start" : false,
         "playing" : false,
         "won" : false,
         "reset" : false,
-        "hit" : false
+        "hit" : false,
+        "gameover" : false
     };
 
     this.meta = {"wins":0,"losses":0,"gems":0,"lives":5};
@@ -175,62 +176,77 @@ Player.prototype.startPosition = function(index){
     }
 }
 
+Player.prototype.celebrate = function(dt){
+
+    self = this;
+    this.state.won = true;
+    this.winTimer = setTimeout(self.win, 2000);
+    player.meta.wins = player.meta.wins + 1;
+    $("#score").text(player.meta.wins);
+};
+
 Player.prototype.win = function(){
-//    var ms = 3000 + new Date().getTime();
-//    while (new Date() < ms){}
-    
+
     reset = true;
-    platerState.win = false;
+    playerState.won = false;
     return true;   
 };
 
-Player.prototype.celebrate = function(dt){
+Player.prototype.lose = function(){
+
     self = this;
-//    this.state.start = false;
-//    this.state.playing = false;
-    this.state.won = true;
-//    this.state = platerState;
-    this.winTimer = setTimeout(self.win, 2000);
-    player.meta.wins = player.meta.wins + 1;
-};
+    this.gameoverTimer = setTimeout(self.gameover, 2000);    
+}
+
+Player.prototype.gameover = function(){
+    
+    reset = true;
+    playerState.gameover = false;
+    return true; 
+}
 
 Player.prototype.reset = function() {
     this.state.start = true;
 //    this.state.playing = true
     this.state.won = false;
     this.state.hit = false;
-//    this.state = platerState;
+    this.state.gameover = false;
+    this.state.playing = true;
+//    this.state = playerState;
     this.position.x = this.startPosition(Rand(1,4));
     this.position.y = 400;
-
+    player.render(true)
 }
     
 Player.prototype.update = function(dt) {
-//    var winningpos;
-//    console.log(platerState);
+
     if(this.state.start){
         this.state.start = true;
-//        this.state = platerState;
     }
+    
     if (this.state.playing){
-//        console.log("PLAYING")
-        platerState.playing = true;
+
+        playerState.playing = true;
         if (this.position.y === -4){
         	if (!this.state.won){
-                console.log("WIN")
                 this.celebrate(dt);
                 this.state.won = true;
-//                this.state = platerState;
+                playerState.won = true;
         	}
-
         };
+        
+        if (playerState.gameover){
+            this.lose(dt);
+            this.state.gameover = true;
+            this.state.playing = false;
+            this.meta.lives = 5;
+            $("#lives").text("Lives:  " + player.meta.lives);
+        }
     };
     
     if(this.state.won){
-        platerState.win = true;
-        platerState.playing = false;
-//        console.log("WINNING")
-//        console.log(platerState)
+        playerState.win = true;
+        playerState.playing = false;
     };
     
     if(reset === true){
@@ -240,7 +256,6 @@ Player.prototype.update = function(dt) {
     if(this.state.reset){
         this.reset();
         this.state.reset = false;
-//        this.state = platerState;
         reset = false;
     }
 };
@@ -248,7 +263,7 @@ Player.prototype.update = function(dt) {
 
 /////////////
 
-//// SOUND CONTROLLER
+// SOUND CONTROLLER
 //SoundController = function(){
 //    this.openingSND = new Audio('sounds/opening.mp3');
 //    this.middleSND = new Audio('sounds/middle.mp3');
@@ -256,11 +271,11 @@ Player.prototype.update = function(dt) {
 //    this.currentSND = this.openingSND;
 //};
 //SoundController.prototype.update = function(){
-////    console.log(platerState);
+////    console.log(playerState);
 //    self = this;
 //    isstarted = true;
 //    iswinning = true;
-//    if(platerState.start){
+//    if(playerState.start){
 //        if(isstarted){
 //            this.currentSND.play();
 //            isstarted = false;
@@ -273,7 +288,7 @@ Player.prototype.update = function(dt) {
 ////        }, 150);
 //
 //    };
-//    if(platerState.win){
+//    if(playerState.win){
 //        if(iswinning){
 //            
 //           //        this.currentSND.volume = 0;
@@ -288,22 +303,22 @@ Player.prototype.update = function(dt) {
 //        }
 //
 //
-//        platerState.win = false;
+//        playerState.win = false;
 //    }
 //};
 //SoundController.prototype.play = function(){
 //    
 //    this.currentSND.play();
 //};
-//
-//// END SOUND CONTROLLER
+
+// END SOUND CONTROLLER
 
 /////////////////
 
 //// UTILITIES
 function checkCollisions() {
     
-    if(platerState.playing){
+    if(playerState.playing){
         for(var i = 0; i<allEnemies.length; i++){
             if (allEnemies[i].position.x < player.position.x + player.size.w &&
                 allEnemies[i].position.x + allEnemies[i].size.w > player.position.x &&
@@ -313,6 +328,11 @@ function checkCollisions() {
                 player.state.hit = true;
                 player.reset();
                 player.meta.lives = player.meta.lives - 1;
+                if(player.meta.lives <= 0){
+                    player.state.gameover = true;
+                    playerState.gameover = true;
+                }
+                $("#lives").text("Lives:  " + player.meta.lives);
             }
         }
     }
@@ -347,18 +367,19 @@ var reset;
 
 var enemyAmount = 4;
 
-platerState = {
+playerState = {
         "start" : false,
         "playing" : false,
         "won" : false,
-        "reset" : false
+        "reset" : false,
+        "gameover" : false
     };
 
 var Main = function(){
 //    e = new Enemy();
     player = new Player();
-    platerState.start = true;
-//    player.state = platerState;
+    playerState.start = true;
+//    player.state = playerState;
 
     allEnemies = [];
     for (var i = 0; i < enemyAmount; i++) {
@@ -370,27 +391,28 @@ var Main = function(){
     gameoverScreen = new Gameover();
     
     checkCollisions();
-    
+
+//    
 //    audio = new SoundController();
 //    audio.play();
 };
 // END MAIN
 
 // SOUND
-var isPlaying = true;
-var onKeyDown = function(event) {
-    if (event.keyCode == 27){
-        if(!isPlaying){
-            audio.play();
-            isPlaying = true;
-        }
-        else{
-            audio.pause();
-            isPlaying = false;
-        };    
-    };
-};
-document.addEventListener('keydown', onKeyDown, false);
+//var isPlaying = true;
+//var onKeyDown = function(event) {
+//    if (event.keyCode == 27){
+//        if(!isPlaying){
+//            audio.play();
+//            isPlaying = true;
+//        }
+//        else{
+//            audio.pause();
+//            isPlaying = false;
+//        };    
+//    };
+//};
+//document.addEventListener('keydown', onKeyDown, false);
 // END SOUND
 
 Main();
