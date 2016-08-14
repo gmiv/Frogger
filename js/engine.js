@@ -99,6 +99,8 @@ var Engine = (function(global) {
             enemy.update(dt);
         });
         player.update(dt);
+        audio.update(dt);
+        
         
 //        audio.update();
         

@@ -180,7 +180,7 @@ Player.prototype.celebrate = function(dt){
 
     self = this;
     this.state.won = true;
-    this.winTimer = setTimeout(self.win, 2000);
+    this.winTimer = setTimeout(self.win, 4000);
     player.meta.wins = player.meta.wins + 1;
     $("#score").text(player.meta.wins);
 };
@@ -189,6 +189,7 @@ Player.prototype.win = function(){
 
     reset = true;
     playerState.won = false;
+    playerState.start = true;
     return true;   
 };
 
@@ -202,6 +203,7 @@ Player.prototype.gameover = function(){
     
     reset = true;
     playerState.gameover = false;
+
     return true; 
 }
 
@@ -223,10 +225,21 @@ Player.prototype.update = function(dt) {
     if(this.state.start){
         this.state.start = true;
     }
+
+    if(player.position.y >=318){
+        playerState.playing = false;
+    }
+    
+    if(player.position.y <= 236){
+        playerState.playing = true;
+    }
+    
+    if(player.position.y <= -4){
+        playerState.playing = false;
+        playerState.win = true;
+    }
     
     if (this.state.playing){
-
-        playerState.playing = true;
         if (this.position.y === -4){
         	if (!this.state.won){
                 this.celebrate(dt);
@@ -241,6 +254,8 @@ Player.prototype.update = function(dt) {
             this.state.playing = false;
             this.meta.lives = 5;
             $("#lives").text("Lives:  " + player.meta.lives);
+            player.meta.wins = 0;
+            $("#score").text(player.meta.wins);
         }
     };
     
@@ -261,57 +276,70 @@ Player.prototype.update = function(dt) {
 };
 // END PLAYER
 
-/////////////
+/////////////////
 
 // SOUND CONTROLLER
-//SoundController = function(){
-//    this.openingSND = new Audio('sounds/opening.mp3');
-//    this.middleSND = new Audio('sounds/middle.mp3');
-//    this.winSND = new Audio('sounds/win.mp3');
-//    this.currentSND = this.openingSND;
-//};
-//SoundController.prototype.update = function(){
-////    console.log(playerState);
-//    self = this;
-//    isstarted = true;
-//    iswinning = true;
-//    if(playerState.start){
-//        if(isstarted){
-//            this.currentSND.play();
-//            isstarted = false;
-//        }
-////        this.currentSND.volume = 0;
-////        this.currentSND.pause();
-////        //Avoid thselfe Promise Error
-////        setTimeout(function () {      
-////           self.currentSND.play();
-////        }, 150);
+SoundController = function(){
+    this.openingSND = new Audio('sounds/opening.mp3');
+    this.middleSND = new Audio('sounds/middle.mp3');
+    this.winSND = new Audio('sounds/win.mp3');
+    this.currentSND = this.openingSND;
+};
+SoundController.prototype.update = function(){
+//    console.log(playerState);
+    self = this;
+    isstarted = true;
+    iswinning = true;
+    if(playerState.start){
+            this.winSND.pause();
+//            this.openingSND.currentTime = 0;
+            this.openingSND.play();
+        
+        }
+//        this.currentSND.volume = 0;
+//        this.currentSND.pause();
+//        //Avoid thselfe Promise Error
+//        setTimeout(function () {      
+//           self.currentSND.play();
+//        }, 150);
 //
 //    };
-//    if(playerState.win){
-//        if(iswinning){
-//            
-//           //        this.currentSND.volume = 0;
-//            this.currentSND.pause();
-//            //Avoid the Promise Error
+    
+    if(playerState.playing){
+        playerState.start = false;
+        this.openingSND.pause();
+//        this.middleSND.currentTime = 0;
+        this.middleSND.play();
+    }
+    if(playerState.win){
+        if(iswinning){
+            playerState.playing = false;
+            
+           //        this.currentSND.volume = 0;
+            this.middleSND.pause();
+//            this.winSND.currentTime = 0;
+            this.winSND.play();
+            //Avoid the Promise Error
 //            this.currentSND = this.winSND;
 //            setTimeout(function () {      
 //               self.currentSND.play();
 //            }, 150);
-//            iswinning = false;
+            iswinning = false;
 //            console.log("in winning")
-//        }
-//
-//
-//        playerState.win = false;
-//    }
-//};
+        }
+
+
+        playerState.win = false;
+    }
+};
+
 //SoundController.prototype.play = function(){
 //    
 //    this.currentSND.play();
 //};
 
 // END SOUND CONTROLLER
+
 
 /////////////////
 
@@ -392,29 +420,28 @@ var Main = function(){
     
     checkCollisions();
 
-//    
-//    audio = new SoundController();
+    
+    audio = new SoundController();
 //    audio.play();
 };
 // END MAIN
 
 // SOUND
-//var isPlaying = true;
-//var onKeyDown = function(event) {
-//    if (event.keyCode == 27){
-//        if(!isPlaying){
-//            audio.play();
-//            isPlaying = true;
-//        }
-//        else{
-//            audio.pause();
-//            isPlaying = false;
-//        };    
-//    };
-//};
-//document.addEventListener('keydown', onKeyDown, false);
+var isPlaying = true;
+var onKeyDown = function(event) {
+    if (event.keyCode == 27){
+        if(!isPlaying){
+            audio.play();
+            isPlaying = true;
+        }
+        else{
+            audio.pause();
+            isPlaying = false;
+        };    
+    };
+};
+document.addEventListener('keydown', onKeyDown, false);
 // END SOUND
 
 Main();
-
 
