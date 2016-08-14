@@ -20,3 +20,16 @@ canvas {
 .score{
     font-size: 40px;
 }
+
+.characters{
+    margin-top: 20%;
+}
+
+.choose{
+    font-size: 850%;
+}
+
+.char{
+    margin-left: 10%;
+    margin-right: 10%;
+}

@@ -36,6 +36,23 @@ var Engine = (function(global) {
     /* This function serves as the kickoff point for the game loop itself
      * and handles properly calling the update and render methods.
      */
+    
+    var CHARACTER
+    function loadData() {
+        CHARACTER= location.search;
+       if (!CHARACTER) return false;
+       CHARACTER = CHARACTER.substr(1);
+
+       var a = (/^a=/);
+       CHARACTER = CHARACTER.split("&").filter(function(item) {
+          return a.test(item);
+       });
+       if (!CHARACTER.length) return false;
+       //gets the first element 'a' matched
+       CHARACTER = CHARACTER[0].replace("a=", "");
+    return true;
+}
+    
     function main() {
         /* Get our time delta information which is required if your game
          * requires smooth animation. Because everyone's computer processes
@@ -51,7 +68,6 @@ var Engine = (function(global) {
          */
         update(dt);
         render();
-
         /* Set our lastTime variable which is used to determine the time delta
          * for the next time this function is called.
          */
@@ -68,9 +84,11 @@ var Engine = (function(global) {
      * game loop.
      */
     function init() {
+        loadData();
         reset();
         lastTime = Date.now();
         main();
+        
     }
 
     /* This function is called by main (our game loop) and itself calls all
@@ -83,7 +101,7 @@ var Engine = (function(global) {
      * on the entities themselves within your app.js file).
      */
     function update(dt) {
-        updateEntities(dt);
+        updateEntities(dt, CHARACTER);
         checkCollisions();
     }
 
@@ -94,11 +112,12 @@ var Engine = (function(global) {
      * the data/properties related to the object. Do your drawing in your
      * render methods.
      */
-    function updateEntities(dt) {
+    function updateEntities(dt, CHARACTER) {
         allEnemies.forEach(function(enemy) {
             enemy.update(dt);
         });
-        player.update(dt);
+        console.log("UE"+ CHARACTER)
+        player.update(dt, CHARACTER);
         audio.update(dt);
         
         
@@ -198,6 +217,9 @@ var Engine = (function(global) {
         'images/grass-block.png',
         'images/enemy-bug.png',
         'images/char-boy.png',
+        'images/char-cat-girl.png',
+        'images/char-horn-girl.png',
+        'images/char-pink-girl.png',
         'images/char-princess-girl.png',
         'images/win.png',
         'images/gameover.png'

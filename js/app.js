@@ -110,11 +110,11 @@ Enemy.prototype.reset = function() {
 /////////////
 
 // PLAYER
-var Player = function() {
+var Player = function(CHARACTER) {
     Entity.call(this);
     this.position.x = this.startPosition(Rand(1,4)); 
     this.position.y = 400;
-    this.sprite = 'images/char-boy.png';
+    this.sprite = 'images/' + CHARACTER + '.png';
     this.state.start = true;
     this.state.playing = true;
 };
@@ -369,6 +369,23 @@ function checkCollisions() {
 var Rand = function (min, max) {
     return Math.floor((Math.random() * max) + min);
 };
+
+var CHARACTER
+function loadData() {
+        CHARACTER= location.search;
+       if (!CHARACTER) return false;
+       CHARACTER = CHARACTER.substr(1);
+
+       var a = (/^a=/);
+       CHARACTER = CHARACTER.split("&").filter(function(item) {
+          return a.test(item);
+       });
+       if (!CHARACTER.length) return false;
+       //gets the first element 'a' matched
+       CHARACTER = CHARACTER[0].replace("a=", "");
+    return true;
+}
+
 // END UTILITIES
 
 /////////////////
@@ -404,8 +421,9 @@ playerState = {
     };
 
 var Main = function(){
+   loadData();
 //    e = new Enemy();
-    player = new Player();
+    player = new Player(CHARACTER);
     playerState.start = true;
 //    player.state = playerState;
 

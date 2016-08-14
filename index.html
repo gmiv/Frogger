@@ -7,38 +7,38 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
     <link rel="stylesheet" href="css/style.css">
     <script src="https://code.jquery.com/jquery-3.0.0.min.js" integrity="sha256-JmvOoLtYsmqlsWxa7mDSLMwa6dZ9rrIdtrrVYRnDRH0=" crossorigin="anonymous"></script>
+
 </head>
 <body>
     <div id="mainID" class="container">
+        <div class="row choose">
+            <strong>FROGGER</strong>
+        </div>
         <div class="row">
-            <game id="div1" class="col-md-7">
+            <h1><strong>Chose your Hero</strong></h1>
+        </div>
+            <div class="row characters">
+                <input type="image" src="images/char-boy.png" class=".col-md-2 char"/ id="char-boy">
 
-            </game>
-            <div class="col-md-3 text-center score" >
-                SCORE : 
-            </div>
-            <div class="col-md-2 text-center score" id="score">
-            0   
-            </div>
+                <input type="image" src="images/char-cat-girl.png" class=".col-md-2 char" id="char-cat-girl"/>
+
+                <input type="image" src="images/char-horn-girl.png" class=".col-md-2 char" id="char-horn-girl"/>
+                
+                <input type="image" src="images/char-pink-girl.png" class=".col-md-2 char" id="char-pink-girl"/>
+
+                <input type="image" src="images/char-princess-girl.png" class=".col-md-2 char" id="char-princess-girl"/>
         </div>
     </div>
-
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6" id="lives">
-                    Lives: 5
-
-                </div>
-                <div class="col-md-6">
-                    Time : 0
-                </div>
-            </div>
-        </div>
     
 </body>
     
-<script src="js/resources.js"></script>
-<script src="js/app.js"></script>
-<script src="js/engine.js"></script>
+<script>
+
+    $(".char").click(function () {
+        CHARACTER = event.target.id;
+        location.assign("app.html?a=" + CHARACTER);
+    });    
+    
+</script>
     
 </html>
