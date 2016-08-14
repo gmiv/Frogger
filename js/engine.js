@@ -37,21 +37,6 @@ var Engine = (function(global) {
      * and handles properly calling the update and render methods.
      */
     
-    var CHARACTER
-    function loadData() {
-        CHARACTER= location.search;
-       if (!CHARACTER) return false;
-       CHARACTER = CHARACTER.substr(1);
-
-       var a = (/^a=/);
-       CHARACTER = CHARACTER.split("&").filter(function(item) {
-          return a.test(item);
-       });
-       if (!CHARACTER.length) return false;
-       //gets the first element 'a' matched
-       CHARACTER = CHARACTER[0].replace("a=", "");
-    return true;
-}
     
     function main() {
         /* Get our time delta information which is required if your game
@@ -101,8 +86,10 @@ var Engine = (function(global) {
      * on the entities themselves within your app.js file).
      */
     function update(dt) {
-        updateEntities(dt, CHARACTER);
+        updateEntities(dt);
         checkCollisions();
+        console.log(time);
+        timer(dt,time);
     }
 
     /* This is called by the update function and loops through all of the
@@ -112,12 +99,11 @@ var Engine = (function(global) {
      * the data/properties related to the object. Do your drawing in your
      * render methods.
      */
-    function updateEntities(dt, CHARACTER) {
+    function updateEntities(dt) {
         allEnemies.forEach(function(enemy) {
-            enemy.update(dt);
+            enemy.update(dt);   
         });
-        console.log("UE"+ CHARACTER)
-        player.update(dt, CHARACTER);
+        player.update(dt);
         audio.update(dt);
         
         
@@ -178,6 +164,15 @@ var Engine = (function(global) {
         allEnemies.forEach(function(enemy) {
             enemy.render(true);
         });
+        
+        gems.forEach(function(gem) {
+            if(!gem.state.hit){
+                gem.render(true);
+            }
+            else{
+                gem.render(false);
+            }
+        });
 //        if (player.state.start || player.state.playing){
 //            player.render();
 //        }
@@ -222,7 +217,10 @@ var Engine = (function(global) {
         'images/char-pink-girl.png',
         'images/char-princess-girl.png',
         'images/win.png',
-        'images/gameover.png'
+        'images/gameover.png',
+        'images/GemOrange.png',
+        'images/GemGreen.png',
+        'images/GemBlue.png'
     ]);
     Resources.onReady(init);
 

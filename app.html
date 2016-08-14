@@ -10,34 +10,42 @@
 </head>
 <body>
     <div id="mainID" class="container">
-        <div class="row">
-            <game id="div1" class="col-md-7">
-
-            </game>
-            <div class="col-md-3 text-center score" >
+        <div class="row choose">
+            <strong>FROGGER</strong>
+        </div>
+        <div>            
+            <div class="col-md-6 text-center score" >
                 SCORE : 
             </div>
-            <div class="col-md-2 text-center score" id="score">
+            <div class="col-md-6 text-center score" id="score">
             0   
             </div>
+        </div>
+        <div class="row">
+            <game id="div1" class="col-md-12">
+
+            </game>
         </div>
     </div>
 
     <div class="container">
         <div class="row">
-            <div class="col-md-6" id="lives">
+            <div class="col-md-4 score" id="lives">
                 Lives: 5
+            </div>
+            <div class="col-md-4 score" id="gems">
+                Gems: 0
 
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4 score">
                 Time : 0
             </div>
         </div>
     </div>
     <div class="row">
-<form action="index.html">
-    <input type="submit" value="Choose your Hero" />
-</form>
+    <form action="index.html">
+        <input type="submit" value="Choose your Hero" />
+    </form>
     </div>
     
 </body>

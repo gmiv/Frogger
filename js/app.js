@@ -278,6 +278,57 @@ Player.prototype.update = function(dt) {
 
 /////////////////
 
+// GEM
+var Gem = function () {
+    Entity.call(this);
+    this.position.x = this.startPositionX(Rand(1,3));
+    this.position.y = this.startPositionY(Rand(1,3));//220;//140;//60;//Rand(50,180);
+    this.speed = Rand(80,380);
+    this.sprite = 'images/' + this.startGem(Rand(1,3)) + '.png';
+    this.state.start = true;
+    this.state.playing = true;
+};
+
+Gem.prototype = Object.create(Entity.prototype);
+
+Gem.prototype.startPositionY = function(index){
+    switch (index) {
+        case 1:
+            return 60;
+        case 2:
+            return 140;
+        case 3:
+            return 220;
+    }
+}
+
+Gem.prototype.startPositionX = function(index){
+	switch (index) {
+		case 1:
+            return 5;
+        case 2:
+            return 105;
+        case 3:
+            return 305;
+        case 4:
+            return 405;
+    }
+}
+
+Gem.prototype.startGem = function(index){
+    switch (index) {
+        case 1:
+            return "GemOrange";
+        case 2:
+            return "GemGreen";
+        case 3:
+            return "GemBlue";
+    }
+}
+// END GEM
+
+/////////////////
+
 // SOUND CONTROLLER
 SoundController = function(){
     this.openingSND = new Audio('sounds/opening.mp3');
@@ -286,51 +337,51 @@ SoundController = function(){
     this.currentSND = this.openingSND;
 };
 SoundController.prototype.update = function(){
-//    console.log(playerState);
-    self = this;
-    isstarted = true;
-    iswinning = true;
-    if(playerState.start){
-            this.winSND.pause();
-//            this.openingSND.currentTime = 0;
-            this.openingSND.play();
-        
-        }
-//        this.currentSND.volume = 0;
-//        this.currentSND.pause();
-//        //Avoid thselfe Promise Error
-//        setTimeout(function () {      
-//           self.currentSND.play();
-//        }, 150);
 //
-//    };
-    
-    if(playerState.playing){
-        playerState.start = false;
-        this.openingSND.pause();
-//        this.middleSND.currentTime = 0;
-        this.middleSND.play();
-    }
-    if(playerState.win){
-        if(iswinning){
-            playerState.playing = false;
-            
-           //        this.currentSND.volume = 0;
-            this.middleSND.pause();
-//            this.winSND.currentTime = 0;
-            this.winSND.play();
-            //Avoid the Promise Error
-//            this.currentSND = this.winSND;
-//            setTimeout(function () {      
-//               self.currentSND.play();
-//            }, 150);
-            iswinning = false;
-//            console.log("in winning")
-        }
-
-
-        playerState.win = false;
-    }
+//    self = this;
+//    isstarted = true;
+//    iswinning = true;
+//    if(playerState.start){
+//            this.winSND.pause();
+////            this.openingSND.currentTime = 0;
+//            this.openingSND.play();
+//        
+//        }
+////        this.currentSND.volume = 0;
+////        this.currentSND.pause();
+////        //Avoid thselfe Promise Error
+////        setTimeout(function () {      
+////           self.currentSND.play();
+////        }, 150);
+////
+////    };
+//    
+//    if(playerState.playing){
+//        playerState.start = false;
+//        this.openingSND.pause();
+////        this.middleSND.currentTime = 0;
+//        this.middleSND.play();
+//    }
+//    if(playerState.win){
+//        if(iswinning){
+//            playerState.playing = false;
+//            
+//           //        this.currentSND.volume = 0;
+//            this.middleSND.pause();
+////            this.winSND.currentTime = 0;
+//            this.winSND.play();
+//            //Avoid the Promise Error
+////            this.currentSND = this.winSND;
+////            setTimeout(function () {      
+////               self.currentSND.play();
+////            }, 150);
+//            iswinning = false;
+////            console.log("in winning")
+//        }
+//
+//
+//        playerState.win = false;
+//    }
 };
 
 //SoundController.prototype.play = function(){
@@ -363,6 +414,24 @@ function checkCollisions() {
                 $("#lives").text("Lives:  " + player.meta.lives);
             }
         }
+    
+        for(var i = 0; i<gems.length; i++){
+            if (gems[i].position.x < player.position.x + player.size.w &&
+                gems[i].position.x + gems[i].size.w > player.position.x &&
+                gems[i].position.y < player.position.y + player.size.h &&
+                gems[i].size.h + gems[i].position.y > player.position.y){
+                
+                gems[i].state.hit = true;
+                player.meta.gems = player.meta.gems + 1;
+                $("#gems").text("Gems:  " + player.meta.gems);
+                
+                //remove gem from array
+                var i = gems.indexOf(gems[i]);
+                if(i != -1) {
+                    gems.splice(i, 1);
+                }
+            }
+        }
     }
 };
     
@@ -386,6 +455,12 @@ function loadData() {
     return true;
 }
 
+function timer(dt){
+    time = 10
+    time = time - dt
+    console.log(time);
+     $("#timer").text("Time:  " + time.toString);
+}
 // END UTILITIES
 
 /////////////////
@@ -406,18 +481,22 @@ document.addEventListener('keyup', function(e) {
 // MAIN
 var player;
 
-var allEnemies;
+var allEnemies, gems;
 var audio ;
 var reset;
 
 var enemyAmount = 4;
+var gemAmount = 4;
+
+var time = 10.0;
 
 playerState = {
         "start" : false,
         "playing" : false,
         "won" : false,
         "reset" : false,
-        "gameover" : false
+        "gameover" : false,
+        "gem" : false
     };
 
 var Main = function(){
@@ -430,15 +509,19 @@ var Main = function(){
     allEnemies = [];
     for (var i = 0; i < enemyAmount; i++) {
         allEnemies.push(new Enemy());
-
+    }; 
+    
+    gems = [];
+    for (var i = 0; i < gemAmount; i++) {
+        gems.push(new Gem());
     }; 
     
     winScreen = new Win();
     gameoverScreen = new Gameover();
     
     checkCollisions();
+    timer(null);
 
-    
     audio = new SoundController();
 //    audio.play();
 };
