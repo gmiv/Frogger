@@ -7,7 +7,7 @@
 body {
     text-align: center;
     background-color: #2346e4;
-    margin: 5%;
+    margin: 1%;
 /*
     display: flex;
     flex-flow: wrap;
@@ -17,12 +17,12 @@ body {
 
 canvas {
 /*    background-color: blue;*/
-/*    width: 30%;*/
-    height: auto;
+    width: 35%;
+/*    height: auto;*/
 }
 
 .score{
-    font-size: 40px;
+    font-size: 2em;
 }
 
 .characters{
@@ -30,7 +30,7 @@ canvas {
 }
 
 .choose{
-    font-size: 750%;
+    font-size: 450%;
 }
 
 .char{
