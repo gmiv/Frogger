@@ -27,11 +27,4 @@ https://gmiv.github.io/Frogger/
 
 ### How to Use
 1. **Initialization**: Call the `Main` function to start the game. This sets up the player, enemies, gems, and other necessary elements.
-2. **Game Loop**: The game seems to lack a central game loop for continuous updates. Normally, you would expect a `requestAnimationFrame` or similar loop to continuously update the game state.
-3. **Player Interaction**: Use the arrow keys to move the player and interact with the game environment.
-
-### Potential Improvements
-- **Game Loop**: Implement a proper game loop for continuous updates.
-- **More Features**: Add more features like scoring, levels, or enhanced player abilities.
-- **Code Refactoring**: Some methods are commented out or incomplete, indicating potential areas for refactoring or further development.
-- **Sound Control**: The sound control functionality appears incomplete and could be further developed for better user experience. 
+2. **Player Interaction**: Use the arrow keys to move the player and interact with the game environment.
